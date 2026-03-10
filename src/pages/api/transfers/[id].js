@@ -1,12 +1,10 @@
-import fs from 'fs';
-import path from 'path';
+import { readJSON } from '@/lib/data';
 
 export default function handler(req, res) {
   const { id } = req.query;
-  const filePath = path.join(process.cwd(), 'data', 'transfers.json');
-  const transfers = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
 
   if (req.method === 'GET') {
+    const transfers = readJSON('transfers.json');
     const transfer = transfers.find(t => t.id === parseInt(id));
     if (transfer) {
       return res.status(200).json(transfer);

@@ -1,5 +1,4 @@
-import fs from 'fs';
-import path from 'path';
+import { readJSON, writeJSON } from '@/lib/data';
 
 /**
  * REORDER QUANTITY FORMULA:
@@ -14,34 +13,17 @@ import path from 'path';
  * - leadTimeDays: Configurable lead time (default 7 days) representing how long
  *   a reorder takes to arrive
  *
- * RATIONALE:
- * - We want enough stock to cover the reorder point PLUS the amount that will move
- *   during the lead time period
- * - Transfer velocity is used as a proxy for demand: if stock is being transferred
- *   frequently between warehouses, it indicates active movement/consumption
- *
  * EDGE CASES:
  * - New products with no transfer history: velocity = 0, so reorder qty = reorderPoint - currentStock
  * - Zero velocity: Same as above, just bring stock up to reorder point
  * - Stock already above threshold: reorder qty = 0 (max with 0 prevents negative)
  */
 
-const dataDir = path.join(process.cwd(), 'data');
-
-function readJSON(filePath) {
-  return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-}
-
-function writeJSON(filePath, data) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-}
-
 function calculateAlerts(leadTimeDays = 7) {
-  const products = readJSON(path.join(dataDir, 'products.json'));
-  const stock = readJSON(path.join(dataDir, 'stock.json'));
-  const transfers = readJSON(path.join(dataDir, 'transfers.json'));
+  const products = readJSON('products.json');
+  const stock = readJSON('stock.json');
+  const transfers = readJSON('transfers.json');
 
-  // Calculate transfer velocity per product over last 30 days
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
   const recentTransfers = transfers.filter(
     t => t.status === 'completed' && new Date(t.createdAt) >= thirtyDaysAgo
@@ -53,7 +35,6 @@ function calculateAlerts(leadTimeDays = 7) {
     velocityMap[t.productId] += t.quantity;
   });
 
-  // Convert total transferred units to daily rate
   Object.keys(velocityMap).forEach(pid => {
     velocityMap[pid] = velocityMap[pid] / 30;
   });
@@ -63,7 +44,6 @@ function calculateAlerts(leadTimeDays = 7) {
     const totalQuantity = productStock.reduce((sum, s) => sum + s.quantity, 0);
     const dailyVelocity = velocityMap[product.id] || 0;
 
-    // Calculate stock ratio for status categorization
     const stockRatio = product.reorderPoint > 0 ? totalQuantity / product.reorderPoint : 999;
 
     let status;
@@ -72,7 +52,6 @@ function calculateAlerts(leadTimeDays = 7) {
     else if (stockRatio >= 3.0) status = 'overstocked';
     else status = 'adequate';
 
-    // Reorder quantity formula
     const targetStock = product.reorderPoint + (dailyVelocity * leadTimeDays);
     const reorderQuantity = Math.max(0, Math.ceil(targetStock - totalQuantity));
 
@@ -101,8 +80,7 @@ export default function handler(req, res) {
     const leadTime = parseInt(req.query.leadTime) || 7;
     const alerts = calculateAlerts(leadTime);
 
-    // Also return persisted alert tracking data
-    const alertTracking = readJSON(path.join(dataDir, 'alerts.json'));
+    const alertTracking = readJSON('alerts.json');
     const enriched = alerts.map(alert => {
       const tracked = alertTracking.find(a => a.productId === alert.productId);
       return {
@@ -117,14 +95,13 @@ export default function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    // Update alert tracking (acknowledge or mark as ordered)
     const { productId, action } = req.body;
 
     if (!productId || !action) {
       return res.status(400).json({ message: 'productId and action are required' });
     }
 
-    const alertTracking = readJSON(path.join(dataDir, 'alerts.json'));
+    const alertTracking = readJSON('alerts.json');
     const existingIdx = alertTracking.findIndex(a => a.productId === parseInt(productId));
 
     const entry = existingIdx >= 0
@@ -149,7 +126,7 @@ export default function handler(req, res) {
       alertTracking.push(entry);
     }
 
-    writeJSON(path.join(dataDir, 'alerts.json'), alertTracking);
+    writeJSON('alerts.json', alertTracking);
     return res.status(200).json(entry);
   }
 

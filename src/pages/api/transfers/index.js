@@ -1,5 +1,4 @@
-import fs from 'fs';
-import path from 'path';
+import { readJSON, writeJSON } from '@/lib/data';
 
 /**
  * ATOMIC TRANSFER APPROACH:
@@ -15,30 +14,16 @@ import path from 'path';
  *
  * If the process crashes between steps 3 and 5, the transfer record exists as "pending"
  * but stock was never modified — no inconsistency. On recovery, pending transfers can be
- * retried or cancelled. The stock file is written in one fs.writeFileSync call, so it's
+ * retried or cancelled. The stock file is written in one writeJSON call, so it's
  * either fully written or not written at all (at the OS level for typical file sizes).
  *
  * This is the best we can do with JSON file storage. A real production system would use
  * database transactions (BEGIN/COMMIT/ROLLBACK).
  */
 
-const dataDir = path.join(process.cwd(), 'data');
-const transfersPath = path.join(dataDir, 'transfers.json');
-const stockPath = path.join(dataDir, 'stock.json');
-const productsPath = path.join(dataDir, 'products.json');
-const warehousesPath = path.join(dataDir, 'warehouses.json');
-
-function readJSON(filePath) {
-  return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-}
-
-function writeJSON(filePath, data) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-}
-
 export default function handler(req, res) {
   if (req.method === 'GET') {
-    const transfers = readJSON(transfersPath);
+    const transfers = readJSON('transfers.json');
     return res.status(200).json(transfers);
   }
 
@@ -60,8 +45,8 @@ export default function handler(req, res) {
     }
 
     // Validate product and warehouses exist
-    const products = readJSON(productsPath);
-    const warehouses = readJSON(warehousesPath);
+    const products = readJSON('products.json');
+    const warehouses = readJSON('warehouses.json');
     const product = products.find(p => p.id === parseInt(productId));
     const fromWarehouse = warehouses.find(w => w.id === parseInt(fromWarehouseId));
     const toWarehouse = warehouses.find(w => w.id === parseInt(toWarehouseId));
@@ -71,7 +56,7 @@ export default function handler(req, res) {
     if (!toWarehouse) return res.status(404).json({ message: 'Destination warehouse not found' });
 
     // Read stock and find the source record
-    let stockData = readJSON(stockPath);
+    let stockData = readJSON('stock.json');
     const sourceStock = stockData.find(
       s => s.productId === parseInt(productId) && s.warehouseId === parseInt(fromWarehouseId)
     );
@@ -84,7 +69,7 @@ export default function handler(req, res) {
     }
 
     // Step 1: Create transfer record as "pending" (write-ahead)
-    const transfers = readJSON(transfersPath);
+    const transfers = readJSON('transfers.json');
     const transferId = transfers.length > 0 ? Math.max(...transfers.map(t => t.id)) + 1 : 1;
     const transfer = {
       id: transferId,
@@ -97,13 +82,11 @@ export default function handler(req, res) {
       createdAt: new Date().toISOString(),
     };
     transfers.push(transfer);
-    writeJSON(transfersPath, transfers);
+    writeJSON('transfers.json', transfers);
 
     // Step 2: Compute new stock state in memory
-    // Deduct from source
     sourceStock.quantity -= transferQty;
 
-    // Add to destination (create record if none exists)
     let destStock = stockData.find(
       s => s.productId === parseInt(productId) && s.warehouseId === parseInt(toWarehouseId)
     );
@@ -121,12 +104,12 @@ export default function handler(req, res) {
     }
 
     // Step 3: Write stock atomically (single write)
-    writeJSON(stockPath, stockData);
+    writeJSON('stock.json', stockData);
 
     // Step 4: Mark transfer as completed
     transfer.status = 'completed';
     transfer.completedAt = new Date().toISOString();
-    writeJSON(transfersPath, transfers);
+    writeJSON('transfers.json', transfers);
 
     return res.status(201).json(transfer);
   }

@@ -3,25 +3,25 @@
     "id": 1,
     "productId": 1,
     "warehouseId": 1,
-    "quantity": 250
+    "quantity": 227
   },
   {
     "id": 2,
     "productId": 1,
     "warehouseId": 2,
-    "quantity": 150
+    "quantity": 173
   },
   {
     "id": 3,
     "productId": 2,
     "warehouseId": 1,
-    "quantity": 1200
+    "quantity": 1196
   },
   {
     "id": 4,
     "productId": 2,
     "warehouseId": 3,
-    "quantity": 800
+    "quantity": 802
   },
   {
     "id": 5,
@@ -58,6 +58,11 @@
     "productId": 5,
     "warehouseId": 3,
     "quantity": 700
+  },
+  {
+    "id": 11,
+    "productId": 2,
+    "warehouseId": 2,
+    "quantity": 2
   }
 ]
-
