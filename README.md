@@ -1,19 +1,24 @@
 # Multi-Warehouse Inventory Management System
 
 ## Overview
+
 Enhance the existing Multi-Warehouse Inventory Management System built with Next.js and Material-UI (MUI) for GreenSupply Co, a sustainable product distribution company. The current system is functional but needs significant improvements to be production-ready.
 
 ## 🎯 Business Context
+
 GreenSupply Co distributes eco-friendly products across multiple warehouse locations throughout North America. They need to efficiently track inventory across warehouses, manage stock movements, monitor inventory values, and prevent stockouts. This system is critical for their daily operations and customer satisfaction.
 
 ## 🛠️ Tech Stack
+
 - [Next.js](https://nextjs.org/) - React framework
 - [Material-UI (MUI)](https://mui.com/) - UI component library
 - [React](https://reactjs.org/) - JavaScript library
 - JSON file storage (for this assessment)
 
 ## 📋 Current Features (Already Implemented)
+
 The basic system includes:
+
 - ✅ Products management (CRUD operations)
 - ✅ Warehouse management (CRUD operations)
 - ✅ Stock level tracking per warehouse
@@ -75,6 +80,7 @@ Document your approach to ensuring data integrity in code comments or your video
 **C. Transfer Page UI**
 
 Create a `/transfers` page that provides:
+
 - A form to initiate stock transfers between warehouses
 - Transfer history view
 - Appropriate error handling and user feedback
@@ -92,6 +98,7 @@ Design the interface to be intuitive for warehouse managers performing daily ope
 Build a low stock alert and reorder recommendation system that helps warehouse managers proactively manage inventory levels.
 
 **A. Alert System**
+
 - Identify products that need reordering based on current stock levels and reorder points
 - Categorize inventory by stock status (critical, low, adequate, overstocked)
 - Provide actionable reorder recommendations with calculated quantities (see below)
@@ -110,6 +117,7 @@ Don't just flag low stock — calculate a **recommended reorder quantity** for e
 Design and document your formula. Explain your assumptions and how you handle edge cases (e.g., new products with no transfer history, zero velocity).
 
 **C. Implementation Details**
+
 - Create an `/alerts` page for viewing and managing alerts
 - Calculate stock across all warehouses
 - Persist alert tracking data (create `data/alerts.json`)
@@ -137,6 +145,7 @@ We've received reports from warehouse managers that **inventory values on the da
 The current system uses JSON file storage and is designed for a small operation. Suppose GreenSupply Co grows to **500 warehouses, 10,000 products, and 50 concurrent users**.
 
 In your README, write 1-2 paragraphs addressing:
+
 - What breaks first in the current architecture?
 - How would you evolve this system to handle that scale?
 - What specific technologies or patterns would you introduce, and why?
@@ -148,11 +157,13 @@ This is not a trick question — we want to understand how you think about syste
 ## 📦 Getting Started
 
 ### Prerequisites
+
 - Node.js (v16 or higher recommended)
 - Modern web browser (Chrome, Firefox, Safari, or Edge)
 - Screen recording software for video submission (Loom, OBS, QuickTime, etc.)
 
 ### Installation
+
 ```bash
 # Install dependencies
 npm install
@@ -164,6 +175,7 @@ npm run dev
 ```
 
 ### Project Structure
+
 ```
 inventory-management-task/
 ├── data/                  # JSON data files
@@ -179,6 +191,7 @@ The existing codebase includes product, warehouse, and stock management features
 ## 📝 Submission Requirements
 
 ### 1. Code Submission
+
 - Push your code to **your own GitHub repository** (fork or new repo)
 - Clear commit history showing your progression
 - Update `package.json` with any new dependencies
@@ -189,18 +202,21 @@ The existing codebase includes product, warehouse, and stock management features
 Record a video demonstration covering:
 
 **Feature Demo (4-5 minutes)**
+
 - Redesigned dashboard walkthrough (demonstrate responsiveness)
 - Stock transfer workflow (show both successful and error scenarios)
 - Alert system functionality and reorder calculations
 - Bug investigation: explain how you found and fixed it
 
 **Code Explanation (3-4 minutes)**
+
 - Key technical decisions and approach
 - How you ensured transfer atomicity
 - Your reorder quantity formula and the reasoning behind it
 - Code structure highlights
 
 **Reflection (1-2 minutes)**
+
 - What you're proud of
 - Known limitations or trade-offs
 - What you'd improve with more time
@@ -210,6 +226,7 @@ Record a video demonstration covering:
 ### 3. Update This README
 
 Add an implementation summary at the bottom with:
+
 - Your name and completion time
 - Features completed
 - Key technical decisions
@@ -225,6 +242,7 @@ Add an implementation summary at the bottom with:
 **Deadline:** 3 days (72 hours) from receiving this assignment
 
 Submit:
+
 1. GitHub repository link
 2. Video walkthrough link
 3. Updated README with implementation notes
@@ -238,6 +256,7 @@ Submit:
 ## 🏆 Optional Enhancements
 
 If you have extra time, consider adding:
+
 - Live deployment (Vercel/Netlify)
 - Dark mode
 - Export functionality (CSV/PDF)
@@ -275,14 +294,14 @@ A: This is solely for technical assessment. Your code will not be used commercia
 
 This assessment goes beyond "can you build features." We're evaluating:
 
-- **Reasoning over output** — We care more about *why* you made a decision than how much code you wrote. A well-reasoned formula with clear documentation beats a complex implementation you can't explain.
+- **Reasoning over output** — We care more about _why_ you made a decision than how much code you wrote. A well-reasoned formula with clear documentation beats a complex implementation you can't explain.
 - **Debugging ability** — Can you trace through unfamiliar code, form a hypothesis, and verify it?
 - **Data integrity thinking** — Do you consider what happens when things go wrong, not just when they go right?
 - **Architectural awareness** — Do you understand the system you're building on, including its limitations?
 - **Clean, maintainable code** — Professional structure, proper error handling, good naming.
 - **Communication** — Your video and written documentation should be clear and well-organized.
 
-You are welcome to use any tools you like, including AI assistants. We are evaluating the quality of your *decisions and understanding*, not whether you typed every character yourself.
+You are welcome to use any tools you like, including AI assistants. We are evaluating the quality of your _decisions and understanding_, not whether you typed every character yourself.
 
 ---
 
@@ -295,3 +314,97 @@ Good luck! 💪
 ---
 
 **Setup issues?** Verify Node.js is installed and you're using a modern browser. If problems persist, document them in your submission.
+
+---
+
+## Implementation Summary
+
+### Completed Features
+
+**Task 1: Dashboard Redesign**
+
+- Professional KPI cards with eco-friendly green theme
+- Bar chart showing inventory units and value by warehouse (Recharts)
+- Donut chart showing stock distribution by category
+- Enhanced inventory table with stock level progress bars and status chips (critical/low/adequate/overstocked)
+- Full responsive design with sidebar navigation
+- Loading skeletons and error handling
+- Dark mode toggle
+
+**Task 2: Stock Transfer System**
+
+- Complete transfer API with atomic write-ahead pattern for data integrity
+- Transfer form with real-time available stock display and validation
+- Transfer history table with status tracking
+- Source/destination warehouse validation (prevents self-transfers)
+- Quantity validation against available stock
+- Auto-creation of destination stock records when none exist
+
+**Task 3: Low Stock Alert & Reorder System**
+
+- Alert categorization: critical (<=50% of reorder point), low (<=100%), adequate, overstocked (>=300%)
+- Reorder quantity formula: `max(0, (reorderPoint + dailyVelocity * leadTimeDays) - currentStock)`
+- Transfer velocity calculated from last 30 days of completed transfers
+- Configurable lead time parameter
+- Alert status tracking: acknowledge, mark as ordered, reset
+- Filter and summary cards on alerts page
+- Formula documentation displayed on the page
+
+**Task 4: Bug Fix & System Design**
+
+- **Bug found**: `parseInt()` used for `unitCost` in `PUT /api/products/[id]` truncated decimal values (e.g., $2.50 became $2.00)
+- **Root cause**: The numeric sanitization loop treated both `unitCost` and `reorderPoint` the same, but unitCost requires `parseFloat()` to preserve decimal precision
+- **Fix**: Separated the two fields — `parseFloat()` for unitCost, `parseInt()` for reorderPoint
+- **Impact**: Inventory value calculations drifted after any product edit
+
+**Optional Enhancements Completed**
+
+- Dark mode with persistent localStorage toggle
+- CSV and PDF export (products, stock levels)
+- Keyboard shortcuts (Ctrl+K for help, G+D/P/W/S/T/A for navigation)
+- Advanced filtering and search on Products and Stock pages
+- Column sorting on Products page
+- Accessibility: ARIA labels, semantic HTML, keyboard navigation, screen reader support
+
+### Scaling Write-up (Task 4B)
+
+With 500 warehouses, 10,000 products, and 50 concurrent users, **JSON file I/O breaks first**. Every API request reads the entire file into memory, parses it, and writes the full file back. With 5 million potential stock records (500 x 10,000), a single stock.json would be ~100MB+. Reading and writing this for every request would cause multi-second response times, massive memory consumption, and data corruption from concurrent writes (two requests reading the same file, modifying different records, and the last write overwriting the first).
+
+To scale, I would migrate to **PostgreSQL** with indexed tables for products, warehouses, stock, and transfers. Database transactions (BEGIN/COMMIT/ROLLBACK) replace our write-ahead JSON pattern with proper ACID guarantees. For concurrent users, I'd add optimistic locking (version columns) to prevent lost updates. The API layer would move to parameterized queries with connection pooling (e.g., `pg` with `pgBouncer`). For the frontend, I'd add server-side pagination, virtual scrolling for large tables, and SWR/React Query for efficient caching and revalidation. Redis could cache frequently-read dashboard aggregations. If the system grows beyond a single server, a message queue (like BullMQ) would handle transfer operations asynchronously to prevent timeout issues on complex multi-warehouse operations.
+
+### Key Technical Decisions
+
+- **Recharts** for charting: lightweight, React-native, good documentation
+- **Write-ahead pattern** for transfer atomicity: best approach for JSON file storage without true transactions
+- **Transfer velocity as demand proxy**: transfers between warehouses indicate active product movement
+- **MUI theme customization**: eco-friendly green palette, consistent design tokens, dark mode via theme context
+- **Shared Layout component**: eliminates duplicated AppBar code across all pages
+
+### Known Limitations
+
+- JSON file storage has no concurrent write safety
+- No authentication or authorization
+- No pagination (all data loaded at once)
+- Transfer velocity uses a simple 30-day average (no seasonal weighting)
+- No undo for transfers once completed
+
+### Testing Instructions
+
+```bash
+npm install
+npm run dev
+# Open http://localhost:3000
+```
+
+1. **Dashboard**: View KPI cards, charts, and inventory table. Toggle dark mode.
+2. **Products**: Search, filter by category, sort columns. Export to CSV/PDF.
+3. **Transfers**: Select product, source/destination warehouse. Verify stock validation. Check history.
+4. **Alerts**: Adjust lead time, filter by status. Acknowledge alerts, mark as ordered.
+5. **Bug verification**: Edit a product's unit cost (e.g., change to $3.75), verify dashboard value stays correct.
+6. **Keyboard shortcuts**: Press Ctrl+K for help. Try G+D, G+T, etc.
+
+### New Dependencies Added
+
+- `recharts` — Charts and data visualization
+- `jspdf` + `jspdf-autotable` — PDF export
+- `file-saver` — File download utility for CSV/PDF export
