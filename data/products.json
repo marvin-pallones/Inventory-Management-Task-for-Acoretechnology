@@ -1,0 +1,43 @@
+[
+  {
+    "id": 1,
+    "sku": "ECO-UTN-001",
+    "name": "Bamboo Spork Set",
+    "category": "Utensils",
+    "unitCost": 2.50,
+    "reorderPoint": 100
+  },
+  {
+    "id": 2,
+    "sku": "ECO-PKG-002",
+    "name": "Compostable Food Container 32oz",
+    "category": "Packaging",
+    "unitCost": 0.85,
+    "reorderPoint": 500
+  },
+  {
+    "id": 3,
+    "sku": "ECO-UTN-003",
+    "name": "Wooden Chopsticks",
+    "category": "Utensils",
+    "unitCost": 0.30,
+    "reorderPoint": 1000
+  },
+  {
+    "id": 4,
+    "sku": "ECO-PKG-004",
+    "name": "Recyclable Paper Bowl",
+    "category": "Packaging",
+    "unitCost": 0.45,
+    "reorderPoint": 750
+  },
+  {
+    "id": 5,
+    "sku": "ECO-CUP-005",
+    "name": "Biodegradable Coffee Cup 12oz",
+    "category": "Cups",
+    "unitCost": 0.60,
+    "reorderPoint": 600
+  }
+]
+

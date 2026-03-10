@@ -1,0 +1,21 @@
+[
+  {
+    "id": 1,
+    "name": "Main Distribution Center",
+    "location": "Newark, NJ",
+    "code": "NDC-01"
+  },
+  {
+    "id": 2,
+    "name": "West Coast Facility",
+    "location": "Los Angeles, CA",
+    "code": "WCF-02"
+  },
+  {
+    "id": 3,
+    "name": "Southern Hub",
+    "location": "Dallas, TX",
+    "code": "STH-03"
+  }
+]
+
