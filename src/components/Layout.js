@@ -28,7 +28,9 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import EcoIcon from '@mui/icons-material/EnergySavingsLeaf';
+import KeyboardIcon from '@mui/icons-material/Keyboard';
 import { useThemeMode } from '@/context/ThemeContext';
+import KeyboardShortcuts from '@/components/KeyboardShortcuts';
 
 const DRAWER_WIDTH = 260;
 
@@ -157,6 +159,11 @@ export default function Layout({ children }) {
               </IconButton>
             )}
             <Box sx={{ flexGrow: 1 }} />
+            <Tooltip title="Keyboard shortcuts (Ctrl+K)">
+              <IconButton aria-label="keyboard shortcuts">
+                <KeyboardIcon />
+              </IconButton>
+            </Tooltip>
             <Tooltip title={mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}>
               <IconButton onClick={toggleTheme} aria-label="toggle dark mode">
                 {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
@@ -176,6 +183,7 @@ export default function Layout({ children }) {
           {children}
         </Box>
       </Box>
+      <KeyboardShortcuts />
     </Box>
   );
 }
