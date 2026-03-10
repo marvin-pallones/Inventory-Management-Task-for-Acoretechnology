@@ -19,13 +19,16 @@ export default function handler(req, res) {
     const index = products.findIndex((p) => p.id === parseInt(id));
     if (index !== -1) {
       // Sanitize numeric fields for data consistency
-      const numericFields = ['unitCost', 'reorderPoint'];
+      // Bug fix: unitCost must use parseFloat to preserve decimal precision (e.g., 2.50),
+      // while reorderPoint is always an integer. Using parseInt on unitCost truncated
+      // decimal values, causing inventory value calculations to drift after product edits.
       const sanitizedData = { ...req.body };
-      numericFields.forEach(field => {
-        if (sanitizedData[field] !== undefined) {
-          sanitizedData[field] = parseInt(sanitizedData[field]);
-        }
-      });
+      if (sanitizedData.unitCost !== undefined) {
+        sanitizedData.unitCost = parseFloat(sanitizedData.unitCost);
+      }
+      if (sanitizedData.reorderPoint !== undefined) {
+        sanitizedData.reorderPoint = parseInt(sanitizedData.reorderPoint);
+      }
       products[index] = { ...products[index], ...sanitizedData, id: parseInt(id) };
       fs.writeFileSync(filePath, JSON.stringify(products, null, 2));
       res.status(200).json(products[index]);
